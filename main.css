@@ -1,0 +1,43 @@
+body {
+	background-color: #333333;
+	color: #FFFFFF;
+}
+
+.game-btns {
+	display: grid;
+	height: 200px;
+	width: 200px;
+	grid-template-rows: repeat(2, 1fr);
+	grid-template-columns: repeat(2, 1fr);
+}
+
+.game-btn {
+	border-top-left-radius: 100%;
+	border: 0;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+.green {
+	grid-area: 1 / 1 / 1 / 1;
+	background-color: green;
+	rotate: 0;
+}
+
+.red {
+	grid-area: 1 / 2 / 1 / 2;
+	background-color: red;
+	rotate: 90deg;
+}
+
+.yellow {
+	grid-area: 2 / 1 / 2 / 1;
+	background-color: yellow;
+	rotate: -90deg;
+}
+
+.blue {
+	grid-area: 2 / 2 / 2 / 2;
+	background-color: blue;
+	rotate: 180deg;
+}

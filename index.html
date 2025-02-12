@@ -7,10 +7,29 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1" />
 	<meta name="description" content="" />
 	<!--<link rel="icon" href="favicon.png">-->
+	<link rel="stylesheet" href="main.css">
+	<script src="main.js" defer></script>
 </head>
 
 <body>
-	<h1>Simon Says</h1>
+	<div id="main-menu" class="main-menu">
+		<h1 class="title">Simon Says</h1>
+		<button type="button" id="play-btn" class="play-btn">Play</button>
+		<button type="button" id="score-btn" class="score-btn">Score Leaderboard</button>
+	</div>
+	<div id="game-over-screen" class="game-over-screen" hidden>
+		<h1 class="title">Game Over</h1>
+	</div>
+	<div id="game" class="game" hidden>
+		<h1 class="title">Simon Says</h1>
+		<button type="button" id="pause-btn" class="pause-btn">Pause</button>
+		<div class="game-btns">
+			<button type="button" id="green" class="game-btn green"></button>
+			<button type="button" id="red" class="game-btn red"></button>
+			<button type="button" id="yellow" class="game-btn yellow"></button>
+			<button type="button" id="blue" class="game-btn blue"></button>
+		</div>
+	</div>
 </body>
 
 </html>
