@@ -1,47 +1,75 @@
-body {
-	background-color: #333333;
-	color: #FFFFFF;
-}
-
-.game-btns {
-	display: grid;
-	height: 200px;
-	width: 200px;
-	grid-template-rows: repeat(2, 1fr);
-	grid-template-columns: repeat(2, 1fr);
-}
-
-.game-btn {
+button {
+	border: 10px solid #000;
+	cursor: pointer;
+	height: 300px;
+	margin: 0 -2px;
+	outline: none;
+	padding: 0;
+	width: 300px;
+	transition: background 0.2s, box-shadow 0.2s;
+  }
+  
+  #green {
 	border-top-left-radius: 100%;
-	border: 0;
-	margin-right: 10px;
-	margin-bottom: 10px;
-}
-
-.green {
-	grid-area: 1 / 1 / 1 / 1;
-	background-color: green;
-	rotate: 0;
-}
-
-.red {
-	grid-area: 1 / 2 / 1 / 2;
-	background-color: red;
-	rotate: 90deg;
-}
-
-.yellow {
-	grid-area: 2 / 1 / 2 / 1;
-	background-color: yellow;
-	rotate: -90deg;
-}
-
-.blue {
-	grid-area: 2 / 2 / 2 / 2;
-	background-color: blue;
-	rotate: 180deg;
-}
-
-.game-btn-pressed {
-	background-color: white;
-}
+	background: rgba(40, 180, 75, 0.5);
+  }
+  
+  #red {
+	border-top-right-radius: 100%;
+	background: rgba(230, 50, 50, 0.5);
+  }
+  
+  #yellow {
+	border-bottom-left-radius: 100%;
+	background: rgba(250, 210, 20, 0.5);
+  }
+  
+  #blue {
+	border-bottom-right-radius: 100%;
+	background: rgba(0, 115, 230, 0.5);
+  }
+  
+  section {
+	margin: 0 auto;
+	position: relative;
+	width: 620px;
+  }
+  
+  
+  button:not(.disabled):hover {
+	transform: scale(1.05);
+  }
+  
+  
+  .game-btn-pressed {
+	box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+	transform: scale(1.1);
+  }
+  
+  
+  .disabled {
+	opacity: 0.5;
+	pointer-events: none;
+  }
+  
+  #counter {
+	background: #000;
+	border-radius: 50%;
+	box-sizing: border-box;
+	color: #fff;
+	font-family: Arial, sans-serif;
+	font-size: 100px;
+	line-height: 200px;
+	height: 200px;
+	margin-top: -100px;
+	margin-left: -108px;
+	position: absolute;
+	left: 50%;
+	text-align: center;
+	top: 50%;
+	width: 200px;
+  }
+  
+  #container.blocked button {
+	pointer-events: none;
+  }
