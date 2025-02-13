@@ -41,3 +41,7 @@ body {
 	background-color: blue;
 	rotate: 180deg;
 }
+
+.game-btn-pressed {
+	background-color: white;
+}
