@@ -17,7 +17,10 @@
 		<label class="name-label" for="name-input">Nombre</label>
 		<input type="text" class="name-input" id="name-input">
 		<button type="button" id="play-btn" class="play-btn" disabled>Play</button>
-		<button type="button" id="score-btn" class="score-btn">Score Leaderboard</button>
+		<section class="leaderboard" id="leaderboard" hidden>
+			<h2 class="leaderboard-title">Leaderboard</h2>
+			<ol id="leaderboard-display"></ol>
+		</section>
 	</div>
 	<div id="game-over-screen" class="game-over-screen" hidden>
 		<h1 class="title">Juego Terminado</h1>
