@@ -64,6 +64,7 @@ const frequencies = {
 };
 
 function playSound(frequency) {
+	if (game.hidden) return;
 	const oscillator = audioCtx.createOscillator();
 	const gainNode = audioCtx.createGain();
 
@@ -140,7 +141,7 @@ function refreshLeaderboard() {
 // Función que corre al perder o terminar partida
 function gameOver() {
 	showGameOverScreen();
-	if (hiscore > simonSeq.length - 1)
+	if (hiscore < simonSeq.length - 1)
 		window.localStorage.setItem(nameInput.value, simonSeq.length - 1);
 	refreshLeaderboard();
 	setTimeout(showMainMenu, 800);
