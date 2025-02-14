@@ -54,6 +54,7 @@ function showGameOverScreen() {
 	gameOverScreen.hidden = false;
 }
 
+// Audio
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const frequencies = {
 	green: 261.6,  // Do (C4)
@@ -75,10 +76,13 @@ function playSound(frequency) {
 
 	oscillator.start();
 	setTimeout(() => {
-		oscillator.stop();
+		gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.015);
+		oscillator.stop(audioCtx.currentTime + 0.08);
 	}, 200);
 }
 
+// Función llamada cuando se presiona un botón
+// por el jugador o "por Simon"
 function lightUpBtn(btn) {
 	btn.classList.add('game-btn-pressed');
 	playSound(frequencies[btn.id]);
@@ -108,17 +112,24 @@ function simonSays() {
 
 // Función que crea el Leaderboard en base a localStorage
 function refreshLeaderboard() {
+	let hiscoreArray = [];
 	let text = '';
+
 	for (let i = 0; i < window.localStorage.length; i++) {
 		const username = window.localStorage.key(i);
 		// Esto es para que metadata no sea leido
 		// como un usuario
 		if (username.slice(0, 2) == '--') continue;
 		const userHiscore = window.localStorage.getItem(username);
+		hiscoreArray = [...hiscoreArray, { name: username, hiscore: userHiscore }];
+	}
+
+	hiscoreArray.sort((a, b) => b.hiscore - a.hiscore);
+	for (let i = 0; i < hiscoreArray.length; i++) {
 		text +=
 			`<li class="leaderboard-item">
-				<h2 class="leaderboard-name">${username}</h2>
-				<h2 class="leaderboard-score">${userHiscore}</h2>
+				<h2 class="leaderboard-name">${hiscoreArray[i].name}</h2>
+				<h2 class="leaderboard-score">${hiscoreArray[i].hiscore}</h2>
 			</li>`;
 	}
 	// Se oculta todo el leaderboard si está vacío
@@ -144,13 +155,19 @@ function startGame() {
 	simonSays();
 }
 
-btns.forEach((btn, idx) => btn.addEventListener('click', () => {
+// Función llamada al hacer click a uno de los botones del juego
+function onButtonClick(btn, idx) {
 	// Se bloquea el input del usuario mientras es "turno de Simon"
 	if (isSimonSaying) return;
 	if (idx !== simonSeq[btnIdxToEnter]) return gameOver();
 	btnIdxToEnter++;
 	lightUpBtn(btn);
 	if (btnIdxToEnter === simonSeq.length) simonSays();
+}
+
+btns.forEach((btn, idx) => btn.addEventListener('mouseup', (e) => {
+	e.preventDefault();
+	onButtonClick(btn, idx)
 }));
 
 // No permitir al usuario entrar al juego sin nombre
