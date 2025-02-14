@@ -32,6 +32,8 @@ let hiscore;
 // Booleano para pausar el input del usuario mientras que es
 // "turno de Simon"
 let isSimonSaying = false;
+// Usado para determinar si el juego en el que se iniciaron acciones terminó
+let gameId = Symbol();
 
 // Estas son solo helper functions para mostrar
 // las distintas secciones de la página
@@ -56,12 +58,12 @@ function showGameOverScreen() {
 
 // Audio
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const frequencies = {
-	green: 261.6,  // Do (C4)
-	red: 293.7,    // Re (D4)
-	yellow: 329.6, // Mi (E4)
-	blue: 349.2    // Fa (F4)
-};
+const frequencies = [
+	261.6,  // Do (C4)
+	293.7,    // Re (D4)
+	329.6, // Mi (E4)
+	349.2    // Fa (F4)
+];
 
 function playSound(frequency) {
 	if (game.hidden) return;
@@ -84,15 +86,16 @@ function playSound(frequency) {
 
 // Función llamada cuando se presiona un botón
 // por el jugador o "por Simon"
-function lightUpBtn(btn) {
-	btn.classList.add('game-btn-pressed');
-	playSound(frequencies[btn.id]);
-	setTimeout(() => btn.classList.remove('game-btn-pressed'), 100);
+function lightUpBtn(idx) {
+	btns[idx].classList.add('game-btn-pressed');
+	playSound(frequencies[idx]);
+	setTimeout(() => btns[idx].classList.remove('game-btn-pressed'), 100);
 }
 
 // Esta es la función que corre cada vez que "es el turno de Simon"
 function simonSays() {
 	const waitTime = 800;
+	const calledGameId = gameId;
 	btnIdxToEnter = 0;
 	scoreDisplay.innerHTML = simonSeq.length;
 	if (simonSeq.length > hiscore) hiscoreDisplay.innerHTML = simonSeq.length;
@@ -103,7 +106,7 @@ function simonSays() {
 	isSimonSaying = true;
 
 	for (let i = 0; i < simonSeq.length; i++) {
-		setTimeout(() => lightUpBtn(btns[simonSeq[i]]), waitTime * (i + 1));
+		setTimeout(() => calledGameId == gameId && lightUpBtn(simonSeq[i]), waitTime * (i + 1));
 	}
 	setTimeout(() => {
 		isSimonSaying = false;
@@ -141,6 +144,7 @@ function refreshLeaderboard() {
 // Función que corre al perder o terminar partida
 function gameOver() {
 	showGameOverScreen();
+	gameId = Symbol();
 	if (hiscore < simonSeq.length - 1)
 		window.localStorage.setItem(nameInput.value, simonSeq.length - 1);
 	refreshLeaderboard();
@@ -156,23 +160,19 @@ function startGame() {
 	simonSays();
 }
 
-// Función llamada al hacer click a uno de los botones del juego
-function onButtonClick(btn, idx) {
+btns.forEach((btn, idx) => btn.addEventListener('mouseup', (e) => {
+	e.preventDefault();
 	// Se bloquea el input del usuario mientras es "turno de Simon"
 	if (isSimonSaying) return;
 	if (idx !== simonSeq[btnIdxToEnter]) return gameOver();
 	btnIdxToEnter++;
-	lightUpBtn(btn);
+	lightUpBtn(idx);
 	if (btnIdxToEnter === simonSeq.length) simonSays();
-}
-
-btns.forEach((btn, idx) => btn.addEventListener('mouseup', (e) => {
-	e.preventDefault();
-	onButtonClick(btn, idx)
 }));
 
 // No permitir al usuario entrar al juego sin nombre
 nameInput.addEventListener('input', () => playBtn.disabled = nameInput.value.length === 0);
 playBtn.addEventListener('click', startGame);
 resetBtn.addEventListener('click', gameOver);
+showMainMenu();
 refreshLeaderboard();

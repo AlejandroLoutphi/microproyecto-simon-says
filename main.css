@@ -2,11 +2,10 @@ body {
     font-family: 'Arial', sans-serif;
     background-color: #D3D3D3;
     margin: 0;
-    padding: 0;
+    padding: 10px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    height: fit-content;
 }
 
 h1,
@@ -17,13 +16,15 @@ h2 {
 
 .main-menu {
     text-align: center;
+    top: 200px;
     background-color: #fff;
     padding: 20px 30px;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 350px;
     max-width: 75%;
-    overflow-y: auto;
+    overflow-y: visible;
+    margin-top: 20px;
 }
 
 .title {
@@ -41,6 +42,7 @@ h2 {
 .name-input {
     padding: 10px;
     font-size: 1rem;
+    margin-bottom: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -119,12 +121,17 @@ h2 {
 
 .game-over-screen {
     text-align: center;
-    background-color: #fff;
-    padding: 40px 30px;
-    border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 350px;
     max-width: 90%;
+    align-self: center;
+    background: rgba(255, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
 }
 
 .game-over-screen h1 {
@@ -245,11 +252,4 @@ button.disabled {
 
 #container.blocked button {
     pointer-events: none;
-}
-
-.game-over-screen {
-    text-align: center;
-    background: rgba(255, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 10px;
 }
