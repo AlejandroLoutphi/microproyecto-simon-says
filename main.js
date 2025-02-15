@@ -145,6 +145,7 @@ function refreshLeaderboard() {
 function gameOver() {
 	showGameOverScreen();
 	gameId = Symbol();
+	playBtn.innerHTML = 'Jugar de Nuevo';
 	setTimeout(showMainMenu, 800);
 }
 
@@ -178,5 +179,4 @@ playBtn.addEventListener('click', startGame);
 // Nota: no se almacenan puntuaciones para juegos 'reseteados', porque en la rúbrica dice que:
 // 'Se borran correctamente los datos de la partida actual sin afectar el historial de puntajes.'
 resetBtn.addEventListener('click', gameOver);
-showMainMenu();
 refreshLeaderboard();
