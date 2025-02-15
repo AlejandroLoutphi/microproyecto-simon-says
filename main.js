@@ -163,6 +163,7 @@ btns.forEach((btn, idx) => btn.addEventListener('mouseup', (e) => {
 			refreshLeaderboard();
 		}
 		gameOver();
+		return;
 	}
 
 	lightUpBtn(idx);
