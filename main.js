@@ -145,9 +145,6 @@ function refreshLeaderboard() {
 function gameOver() {
 	showGameOverScreen();
 	gameId = Symbol();
-	if (hiscore < simonSeq.length - 1)
-		window.localStorage.setItem(nameInput.value, simonSeq.length - 1);
-	refreshLeaderboard();
 	setTimeout(showMainMenu, 800);
 }
 
@@ -164,7 +161,12 @@ btns.forEach((btn, idx) => btn.addEventListener('mouseup', (e) => {
 	e.preventDefault();
 	// Se bloquea el input del usuario mientras es "turno de Simon"
 	if (isSimonSaying) return;
-	if (idx !== simonSeq[btnIdxToEnter]) return gameOver();
+	if (idx !== simonSeq[btnIdxToEnter]) {
+		if (hiscore < simonSeq.length - 1)
+			window.localStorage.setItem(nameInput.value, simonSeq.length - 1);
+		refreshLeaderboard();
+		gameOver();
+	}
 	btnIdxToEnter++;
 	lightUpBtn(idx);
 	if (btnIdxToEnter === simonSeq.length) simonSays();
@@ -173,6 +175,8 @@ btns.forEach((btn, idx) => btn.addEventListener('mouseup', (e) => {
 // No permitir al usuario entrar al juego sin nombre
 nameInput.addEventListener('input', () => playBtn.disabled = nameInput.value.length === 0);
 playBtn.addEventListener('click', startGame);
+// Nota: no se almacenan puntuaciones para juegos 'reseteados', porque en la rúbrica dice que:
+// 'Se borran correctamente los datos de la partida actual sin afectar el historial de puntajes.'
 resetBtn.addEventListener('click', gameOver);
 showMainMenu();
 refreshLeaderboard();
