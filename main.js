@@ -1,23 +1,3 @@
-const mainMenu = document.getElementById('main-menu');
-const nameInput = document.getElementById('name-input');
-const playBtn = document.getElementById('play-btn');
-const leaderboard = document.getElementById('leaderboard');
-const leaderboardDisplay = document.getElementById('leaderboard-display');
-const scoreDisplay = document.getElementById('score-display');
-const hiscoreDisplay = document.getElementById('hiscore-display');
-const scoreBtn = document.getElementById('score-btn');
-const gameOverScreen = document.getElementById('game-over-screen');
-const game = document.getElementById('game');
-const resetBtn = document.getElementById('reset-btn');
-const counter = document.getElementById('counter');
-const container = document.getElementById('container');
-const green = document.getElementById('green');
-const red = document.getElementById('red');
-const yellow = document.getElementById('yellow');
-const blue = document.getElementById('blue');
-// "Helper Array" para traducir desde índices a elementos HTML
-const btns = [green, red, yellow, blue];
-
 // La lógica del juego consiste en añadir un elemento a un
 // array (simonSeq) cada vez que es "turno de Simon".
 // En el turno del jugador, cada vez que se presiona un
@@ -27,15 +7,34 @@ const btns = [green, red, yellow, blue];
 // Una vez que btnIdxToEnter == simonSeq.length,
 // es "turno de Simon" de nuevo.
 let simonSeq;
-let btnIdxToEnter = 0;
+let btnIdxToEnter;
 let hiscore;
-// Booleano para pausar el input del usuario mientras que es
-// "turno de Simon"
-let isSimonSaying = false;
 // Usado para determinar si el juego en el que se iniciaron acciones terminó
+// eg. para hacer que no se genere audio de partidas pasadas
 let gameId = Symbol();
 
-// Estas son solo helper functions para mostrar
+// Referencias a elementos HTML
+const mainMenu = document.getElementById('main-menu');
+const nameInput = document.getElementById('name-input');
+const playBtn = document.getElementById('play-btn');
+const leaderboard = document.getElementById('leaderboard');
+const leaderboardDisplay = document.getElementById('leaderboard-display');
+const scoreDisplay = document.getElementById('score-display');
+const hiscoreDisplay = document.getElementById('hiscore-display');
+const gameOverScreen = document.getElementById('game-over-screen');
+const game = document.getElementById('game');
+const resetBtn = document.getElementById('reset-btn');
+const counter = document.getElementById('counter');
+const container = document.getElementById('container');
+
+const btns = [
+	document.getElementById('green'),
+	document.getElementById('red'),
+	document.getElementById('yellow'),
+	document.getElementById('blue'),
+];
+
+// Helper functions para mostrar
 // las distintas secciones de la página
 function showGame() {
 	mainMenu.hidden = true;
@@ -58,15 +57,14 @@ function showGameOverScreen() {
 
 // Audio
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const frequencies = [
-	261.6,  // Do (C4)
-	293.7,    // Re (D4)
+const btnFrequencies = [
+	261.6, // Do (C4)
+	293.7, // Re (D4)
 	329.6, // Mi (E4)
-	349.2    // Fa (F4)
+	349.2  // Fa (F4)
 ];
 
 function playSound(frequency) {
-	if (game.hidden) return;
 	const oscillator = audioCtx.createOscillator();
 	const gainNode = audioCtx.createGain();
 
@@ -80,7 +78,7 @@ function playSound(frequency) {
 	oscillator.start();
 	setTimeout(() => {
 		gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.015);
-		oscillator.stop(audioCtx.currentTime + 0.08);
+		oscillator.stop(audioCtx.currentTime + 0.02);
 	}, 200);
 }
 
@@ -88,7 +86,7 @@ function playSound(frequency) {
 // por el jugador o "por Simon"
 function lightUpBtn(idx) {
 	btns[idx].classList.add('game-btn-pressed');
-	playSound(frequencies[idx]);
+	playSound(btnFrequencies[idx]);
 	setTimeout(() => btns[idx].classList.remove('game-btn-pressed'), 100);
 }
 
@@ -103,13 +101,11 @@ function simonSays() {
 	simonSeq = [...simonSeq, Math.floor(Math.random() * 4)];
 	counter.textContent = simonSeq.length;
 	container.classList.add("blocked");
-	isSimonSaying = true;
 
-	for (let i = 0; i < simonSeq.length; i++) {
+	for (let i = 0; i < simonSeq.length; i++)
 		setTimeout(() => calledGameId == gameId && lightUpBtn(simonSeq[i]), waitTime * (i + 1));
-	}
+
 	setTimeout(() => {
-		isSimonSaying = false;
 		container.classList.remove("blocked");
 	}, waitTime * (simonSeq.length + 1));
 }
@@ -160,22 +156,24 @@ function startGame() {
 
 btns.forEach((btn, idx) => btn.addEventListener('mouseup', (e) => {
 	e.preventDefault();
-	// Se bloquea el input del usuario mientras es "turno de Simon"
-	if (isSimonSaying) return;
+
 	if (idx !== simonSeq[btnIdxToEnter]) {
-		if (hiscore < simonSeq.length - 1)
+		if (hiscore < simonSeq.length - 1) {
 			window.localStorage.setItem(nameInput.value, simonSeq.length - 1);
-		refreshLeaderboard();
+			refreshLeaderboard();
+		}
 		gameOver();
 	}
-	btnIdxToEnter++;
+
 	lightUpBtn(idx);
+	btnIdxToEnter++;
 	if (btnIdxToEnter === simonSeq.length) simonSays();
 }));
 
 // No permitir al usuario entrar al juego sin nombre
 nameInput.addEventListener('input', () => playBtn.disabled = nameInput.value.length === 0);
 playBtn.addEventListener('click', startGame);
+
 // Nota: no se almacenan puntuaciones para juegos 'reseteados', porque en la rúbrica dice que:
 // 'Se borran correctamente los datos de la partida actual sin afectar el historial de puntajes.'
 resetBtn.addEventListener('click', gameOver);
